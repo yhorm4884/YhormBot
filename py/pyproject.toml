@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "YhormBot"
+version = "0.1.0"
+description = "Bot created for fun :D"
+authors = ["Badel <badbonsim@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+discord = "^1.7.3"
+easy-pil = "^0.1.6"
+Flask = "^2.1.2"
+discord-ui = "^5.1.6"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

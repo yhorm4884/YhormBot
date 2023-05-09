@@ -1,4 +1,4 @@
-![logo]([https://cdn.discordapp.com/attachments/655186216060321816/820162226316378162/discord.jpg](https://imagenes.lainformacion.com/files/twitter_thumbnail/uploads/imagenes/2021/06/14/discord.jpeg))
+![logo](https://cdn.discordapp.com/attachments/655186216060321816/820162226316378162/discord.jpg](https://imagenes.lainformacion.com/files/twitter_thumbnail/uploads/imagenes/2021/06/14/discord.jpeg))
 <div align="center">
 
 [![Downloads](https://pepy.tech/badge/reactionmenu)](https://pepy.tech/project/reactionmenu) 

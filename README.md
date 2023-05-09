@@ -1,11 +1,7 @@
 ![logo](https://imagenes.lainformacion.com/files/twitter_thumbnail/uploads/imagenes/2021/06/14/discord.jpeg)
 <div align="center">
 
-[![Downloads](https://pepy.tech/badge/reactionmenu)](https://pepy.tech/project/reactionmenu) 
-[![Downloads](https://pepy.tech/badge/reactionmenu/month)](https://pepy.tech/project/reactionmenu)
-[![Downloads](https://pepy.tech/badge/reactionmenu/week)](https://pepy.tech/project/reactionmenu)
-
-![python_version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10-blue)
+![python_version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10-yellow)
 </div>
 
 ---

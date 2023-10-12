@@ -183,7 +183,7 @@ async def Gif(ctx, choices: app_commands.Choice[str], user: discord.Member):
 
 #Comando de Ayudas
 @command.tree.command(name="ayuda", description="'Muestra una pequeña ayuda del bot'")
-async def ayuda(ctx,):
+async def ayuda(interaction,):
 	embed = discord.Embed(title='HELP',
 						description='Muestra una pequeña ayuda del bot',
 						color=0xcd1aff)
@@ -213,22 +213,24 @@ async def ayuda(ctx,):
 	embed.add_field(name='avatar', value='Te muestra tu avatar', inline=True)
 	embed.set_footer(
 	    text='Este bot aún está en mantenimiento, disculpen las molestias.')
-	await ctx.send(embed=embed)
+	await interaction.response.send_message(embed=embed)
+
 
 
 # Informacion del server
 @command.tree.command(name="info", description="muestra info del server")
-async def info(ctx):
-	icon_url = ctx.guild.icon_url
-	embed = discord.Embed(title=f'{ctx.guild.name}',
-						description='Datos Básicos',
-						timestamp=datetime.datetime.utcnow(),
-						color=discord.Color.red())
-	embed.add_field(name='Creación del server ',value=f'{ctx.guild.created_at}')
-	embed.add_field(name='Server ID', value=f'{ctx.guild.id}')
-	embed.add_field(name='Propietario del command', value='Yhorm #4884')
-	embed.set_thumbnail(url=icon_url)
-	await ctx.send(embed=embed)
+async def info(interaction):
+    icon_url = str(interaction.guild.icon)
+    embed = discord.Embed(title=f'{interaction.guild.name}',
+							description='Datos Básicos',
+							timestamp=datetime.datetime.utcnow(),
+							color=discord.Color.red())
+    embed.add_field(name='Creación del server ', value=f'{interaction.guild.created_at}')
+    embed.add_field(name='Server ID', value=f'{interaction.guild.id}')
+    embed.add_field(name='Propietario del command', value='Yhorm #4884')
+    embed.set_thumbnail(url=icon_url)
+    await interaction.response.send_message(embed=embed)
+
 
 
 # funcion DM:  permite mandar un mensaje por privado por medio del command.
@@ -259,37 +261,52 @@ async def chiste(interaction: discord.Integration):
 
 # kickear usuarios
 @command.tree.command(name="eliminar", description="Elimina a un usuario del servidor")
-@commands.has_role("Administradores")
-async def kick(ctx, user: discord.Member, *, reason:str):
+async def kick(interaction: discord.Interaction, user: discord.Member, *, reason:str):
     if user.guild_permissions.administrator:
-        await ctx.send(f"No puedes expulsar a {user.mention} porque es un administrador")
+        await interaction.response.send_message(f"No puedes expulsar a {user.mention} porque es un administrador")
     else:
         await user.kick(reason=reason)
-        await ctx.send(f"{user.mention} ha sido expulsado del servidor")
+        await interaction.response.send_message(f"{user.mention} ha sido expulsado del servidor")
+
+# Verifica si el usuario tiene el rol de "Administradores"
+@kick.check
+async def is_admin(interaction: discord.Interaction):
+    role = discord.utils.get(interaction.guild.roles, name="Administradores")
+    if role in interaction.user.roles:
+        return True
+    else:
+        raise app_commands.MissingRole(role)
 
 
 # Banear usuarios
 @command.tree.command(name='ban', description='Banea a un usuario del servidor')
-@commands.has_role('Administradores')
-async def ban(ctx: commands.Context, member: discord.Member, *, reason: str = 'No especificado'):
+async def ban(interaction: discord.Interaction, member: discord.Member, *, reason: str = 'No especificado'):
     try:
         await member.ban(reason=reason)
-        await ctx.send(f'{member.display_name} ha sido baneado del servidor por {reason}.')
+        await interaction.response.send_message(f'{member.display_name} ha sido baneado del servidor por {reason}.')
     except discord.Forbidden:
-        await ctx.send(f'No tengo permisos para banear a {member.display_name}.')
+        await interaction.response.send_message(f'No tengo permisos para banear a {member.display_name}.')
     except discord.HTTPException:
-        await ctx.send(f'Ha ocurrido un error al intentar banear a {member.display_name}.')
+        await interaction.response.send_message(f'Ha ocurrido un error al intentar banear a {member.display_name}.')
 
-@ban.error
-async def ban_error(ctx, error):
-    if isinstance(error, commands.RoleNotFound):
-        await ctx.send('No tienes el rol necesario para utilizar este comando.')
-    elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send('Por favor, menciona al miembro que deseas banear.')
-    elif isinstance(error, commands.MemberNotFound):
-        await ctx.send('El miembro mencionado no se encuentra en el servidor.')
+# Verifica si el usuario tiene el rol de "Administradores"
+@ban.check
+async def is_admin_ban(interaction: discord.Interaction):
+    role = discord.utils.get(interaction.guild.roles, name="Administradores")
+    if role in interaction.user.roles:
+        return True
     else:
-        await ctx.send('Ha ocurrido un error al ejecutar este comando.')
+        raise app_commands.MissingRole(role)
+
+@command.tree.error
+async def command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
+    if isinstance(error, app_commands.MissingRole):
+        await interaction.response.send_message('No tienes el rol necesario para utilizar este comando.')
+    elif isinstance(error, app_commands.MissingRequiredOption):
+        await interaction.response.send_message('Por favor, menciona al miembro que deseas banear o expulsar.')
+    elif isinstance(error, app_commands.UserNotFound):
+        await interaction.response.send_message('El miembro mencionado no se encuentra en el servidor.')
+
 
 
 # limpiar chat

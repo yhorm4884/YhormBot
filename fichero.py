@@ -1,4 +1,4 @@
-import pickle
+from __init__ import pickle
 class fichero:
     def  __init__(self, ruta, delimitador = None) -> None:
         self.__info_fichero = []
